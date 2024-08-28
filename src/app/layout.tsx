@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Providers } from './providers'
 import '@fontsource/titan-one'
+import '@fontsource/montserrat'
+import '@fontsource/montserrat/300.css'
 
 export const metadata: Metadata = {
   title: 'Juice Machine',
