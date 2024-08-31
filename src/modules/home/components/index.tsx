@@ -1,14 +1,16 @@
 import React from 'react'
-import { Box } from '@chakra-ui/react'
+import { Flex, Box } from '@chakra-ui/react'
 import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 import { JuiceCards } from './JuiceCards'
 import { Navbar } from './Navbar'
 
 export const HomePage: React.FC = () => {
   return (
-    <Box bg={colorsProxy.main.primary} pt={16}>
+    <Box bg={colorsProxy.main.primary} pt={16} pb={16}>
       <Navbar />
-      <JuiceCards />
+      <Flex justify="center">
+        <JuiceCards />
+      </Flex>
     </Box>
   )
 }

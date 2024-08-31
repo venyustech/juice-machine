@@ -1,16 +1,24 @@
 'use client'
-
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Link, HStack, Image, Text } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { PiHandbagThin } from 'react-icons/pi'
-import { juiceTypes } from '../../home/constants/utils'
 import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 import { fontsProxy } from '@/modules/shared/constants/fonts'
 import { animate } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { cartStore } from '@/modules/cart/store/cart'
+import { useJuiceStore } from '@/modules/home/store/juiceStore' // Importando a store
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  showNavLink?: boolean
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ showNavLink = true }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null)
+  const { juiceTypes } = useJuiceStore()
+  const { cart } = cartStore()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,20 +37,19 @@ export const Navbar: React.FC = () => {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [juiceTypes])
 
   const handleClick = (id: number) => {
-    setActiveSection(id) 
-
+    setActiveSection(id)
     const sectionElement = document.getElementById(`section-${id}`)
     if (sectionElement) {
-      const yOffset = -16 
+      const yOffset = -16
       const y = sectionElement.getBoundingClientRect().top + window.pageYOffset + yOffset
 
       animate(window.scrollY, y, {
-        type: 'spring', 
-        stiffness: 120, 
-        damping: 20, 
+        type: 'spring',
+        stiffness: 120,
+        damping: 20,
         onUpdate: (latest) => window.scrollTo(0, latest)
       })
     }
@@ -61,7 +68,14 @@ export const Navbar: React.FC = () => {
       boxShadow="xs"
     >
       <Flex h={16} alignItems="center" justifyContent="space-between" w="100%">
-        <Box pr={8} mr={8} borderRight="1px solid" borderColor={colorsProxy.main.border}>
+        <Box
+          cursor="pointer"
+          onClick={() => router.push('/')}
+          pr={8}
+          mr={8}
+          borderRight="1px solid"
+          borderColor={colorsProxy.main.border}
+        >
           <Image
             src="/images/sharkLogoInLine.png"
             alt="Shark Logo"
@@ -96,17 +110,18 @@ export const Navbar: React.FC = () => {
           {juiceTypes.map((link) => (
             <NavLink
               key={link.id}
-              href={`#section-${link.id}`} 
+              href={`#section-${link.id}`}
               label={link.label}
               isActive={link.id === activeSection}
-              onClick={() => handleClick(link.id)} 
+              onClick={() => handleClick(link.id)}
+              showNavLink={showNavLink}
             />
           ))}
         </HStack>
 
-        <Flex gap={3}>
+        <Flex cursor="pointer" onClick={() => router.push('/cart')} gap={3}>
           <PiHandbagThin fontSize="25px" />
-          <Text as="span">0</Text>
+          <Text as="span">{cart?.length || 0}</Text>
         </Flex>
       </Flex>
     </Flex>
@@ -118,9 +133,11 @@ interface NavLinkProps {
   label: React.ReactNode
   isActive: boolean
   onClick: () => void
+  showNavLink?: boolean
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ href, label, isActive, onClick }) => {
+const NavLink: React.FC<NavLinkProps> = ({ href, label, isActive, onClick, showNavLink = true }) => {
+  if (!showNavLink) return null
   return (
     <Link
       as={NextLink}
@@ -133,11 +150,11 @@ const NavLink: React.FC<NavLinkProps> = ({ href, label, isActive, onClick }) => 
       borderRadius={0}
       height="100%"
       fontSize={{ base: '12px', md: '16px' }}
-      borderBottom={isActive ? '4px solid' : 'none'} 
+      borderBottom={isActive ? '4px solid' : 'none'}
       borderColor={isActive ? colorsProxy.main['border-selected'] : 'transparent'}
       onClick={(e) => {
-        e.preventDefault() 
-        onClick() 
+        e.preventDefault()
+        onClick()
       }}
       _hover={{
         textDecoration: 'none',

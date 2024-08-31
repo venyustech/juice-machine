@@ -1,27 +1,37 @@
 'use client'
-import React, { useState } from 'react'
-import {
-  Box,
-  Flex,
-  Image,
-  SimpleGrid,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button
-} from '@chakra-ui/react'
-import { juiceTypes } from '@/modules/home/constants/utils'
-import { JuiceType, Juice } from '../types'
+import React, { useEffect, useState } from 'react'
+import { Box, Flex, Image, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { JuiceType } from '../types'
 import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 import { fontsProxy } from '@/modules/shared/constants/fonts'
+import { JuiceModal } from './JuiceModal'
+import { useJuiceStore } from '../store/juiceStore'
+import { useGetJuices } from '../hooks/useGetJuices'
 
 export const JuiceCards: React.FC = () => {
+  const { juiceTypes, setJuiceTypes } = useJuiceStore()
+  const { mutate: fetchJuices, data, error, isLoading } = useGetJuices()
+
+  useEffect(() => {
+    if (!data || data.length === 0) {
+      fetchJuices()
+    }
+  }, [fetchJuices, data])
+
+  useEffect(() => {
+    if (data) {
+      setJuiceTypes(data)
+    }
+  }, [data, setJuiceTypes])
+
+  if (isLoading) {
+    return <Text>Carregando...</Text>
+  }
+
+  if (error) {
+    return <Text>Erro ao carregar os tipos de suco.</Text>
+  }
+
   return (
     <Box marginInline={{ base: '3', md: '8' }}>
       {juiceTypes.map((juiceType) => (
@@ -33,10 +43,10 @@ export const JuiceCards: React.FC = () => {
 
 const JuiceCard: React.FC<{ juiceType: JuiceType }> = ({ juiceType }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [selectedJuice, setSelectedJuice] = useState<Juice | null>(null)
+  const [selectedJuiceId, setSelectedJuiceId] = useState<number | null>(null)
 
-  const handleJuiceClick = (juice: Juice) => {
-    setSelectedJuice(juice)
+  const handleJuiceClick = (juiceId: number) => {
+    setSelectedJuiceId(juiceId)
     onOpen()
   }
 
@@ -63,7 +73,7 @@ const JuiceCard: React.FC<{ juiceType: JuiceType }> = ({ juiceType }) => {
               justifyContent="space-between"
               paddingInline={{ lg: '6' }}
               boxShadow="xs"
-              onClick={() => handleJuiceClick(juice)}
+              onClick={() => handleJuiceClick(juice.id)}
               cursor="pointer"
             >
               <Box p={4}>
@@ -74,7 +84,7 @@ const JuiceCard: React.FC<{ juiceType: JuiceType }> = ({ juiceType }) => {
                   {juice.description}
                 </Text>
                 <Text mt={4} fontSize="lg" fontWeight={300}>
-                  {juice.price}
+                  {`R$ ${(juice.value / 100).toFixed(2).replace('.', ',')}`}
                 </Text>
               </Box>
               <Flex>
@@ -89,37 +99,7 @@ const JuiceCard: React.FC<{ juiceType: JuiceType }> = ({ juiceType }) => {
           ))}
         </SimpleGrid>
       </Box>
-      <JuiceModal isOpen={isOpen} onClose={onClose} juice={selectedJuice} />
+      {selectedJuiceId && <JuiceModal isOpen={isOpen} onClose={onClose} juiceId={selectedJuiceId} />}
     </>
-  )
-}
-
-interface JuiceModalProps {
-  isOpen: boolean
-  onClose: () => void
-  juice: Juice | null
-}
-
-const JuiceModal: React.FC<JuiceModalProps> = ({ isOpen, onClose, juice }) => {
-  if (!juice) return null
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{juice.name}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>{juice.description}</Text>
-          <Text mt={2}>{juice.price}</Text>
-          <Image src={juice.imageUrl} alt={juice.name} mt={4} width="100%" objectFit="cover" />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" onClick={onClose}>
-            Adicionar ao Carrinho
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
   )
 }

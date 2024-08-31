@@ -2,8 +2,28 @@ export type Juice = {
   id: number
   name: string
   description: string
-  price: string
+  value: number
   imageUrl: string
+  createdAt: string
+  updatedAt: string
+  juiceType: string
+  options: {
+    sugar: boolean
+    ice: boolean
+    milk: boolean
+  }
+  extras: {
+    chantilly?: {
+      value: number
+    }
+    alcohol?: {
+      value: number
+    }
+    whey?: {
+      value: number
+    }
+  }
+  ingredient: string[]
 }
 
 export type JuiceType = {
