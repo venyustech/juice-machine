@@ -3,6 +3,7 @@ import { Providers } from './providers'
 import '@fontsource/titan-one'
 import '@fontsource/montserrat'
 import '@fontsource/montserrat/300.css'
+import '@fontsource/playfair-display/700.css'
 
 export const metadata: Metadata = {
   title: 'Juice Machine',

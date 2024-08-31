@@ -1,9 +1,10 @@
 export const colors = {
   main: {
     primary: '#FFFFFF',
-    secundary: '#ECECEC',
+    secundary: '#f2f2f2',
     border: '#CCCCCC',
-    'border-selected': '#44A9CC'
+    'border-selected': '#44A9CC',
+    'logo-main-color': '#44A9CC'
   },
   form: {
     label: '#072854',

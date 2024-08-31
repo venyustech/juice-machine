@@ -1,6 +1,7 @@
 export const fonts = {
   fonts: {
-    montserrat: `'Montserrat', sans-serif`
+    montserrat: `'Montserrat', sans-serif`,
+    playfairDisplay: `'Playfair Display', serif`
   }
 }
 
