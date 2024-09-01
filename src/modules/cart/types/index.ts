@@ -8,7 +8,8 @@ export interface OrderPayload {
   extras: {
     [keyname: string]: boolean
   }
-  machine: '1' | '2'
+  machine: string
+  quantity: number
 }
 
 export type JuiceById = {
@@ -62,4 +63,12 @@ export interface CartStore {
   addItemToCart: (item: OrderInStore) => void
   removeItemFromCart: (juiceId: number) => void
   cleanCart: () => void
+}
+
+export interface Machine {
+  id: number
+  name: string
+  local: string
+  createdAt: string
+  updatedAt: string
 }

@@ -15,6 +15,6 @@ const apiRequest = async <T>(url: string): Promise<T> => {
 }
 
 export const fetchJuiceTypes = async (): Promise<JuiceType[]> => {
-  const url = 'http://localhost:5001/juices'
+  const url = 'https://testecolab.onrender.com/juices'
   return await apiRequest<JuiceType[]>(url)
 }
