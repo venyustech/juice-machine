@@ -7,7 +7,7 @@ export const colors = {
     'logo-main-color': '#44A9CC'
   },
   form: {
-    label: '#072854',
+    label: '#44A9CC',
     'label-selected': '#072854',
     'primary-button': '#2797BA',
     'secundary-button': '#2CBD62',

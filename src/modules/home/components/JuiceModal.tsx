@@ -22,6 +22,7 @@ import { cartStore } from '@/modules/cart/store/cart'
 import { fontsProxy } from '@/modules/shared/constants/fonts'
 import { useGetJuiceById } from '@/modules/cart/hooks/useGetJuiceById'
 import { moneyFormatter, optionsTranslate } from '../constants/utils'
+import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 
 interface JuiceModalProps {
   isOpen: boolean
@@ -127,7 +128,7 @@ export const JuiceModal: React.FC<JuiceModalProps> = ({ isOpen, onClose, juiceId
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent borderRadius={1} boxShadow="xs">
         <ModalHeader fontFamily={fontsProxy.fonts.playfairDisplay}>{juice.name}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -140,64 +141,102 @@ export const JuiceModal: React.FC<JuiceModalProps> = ({ isOpen, onClose, juiceId
               <Image src={juice.imageUrl} alt={juice.name} mt={4} width="100%" height="100%" objectFit="cover" />
             </Box>
           </Flex>
-          <Box>
-            <Text>Opções</Text>
-            <Stack direction="column">
-              {Object.keys(optionValue).map((option) => (
-                <Checkbox
-                  key={option}
-                  name={option}
-                  isChecked={optionValue[option]?.isIncluded || false}
-                  onChange={(e) => {
-                    const { name, checked } = e.target
-                    setOptionValue((prev) => ({
-                      ...prev,
-                      [name]: { ...prev[name], isIncluded: checked }
-                    }))
-                  }}
-                >
-                  {optionsTranslate(option)}
-                </Checkbox>
-              ))}
-            </Stack>
-          </Box>
-          <Box>
-            <Text>Extras</Text>
-            <Stack direction="column">
-              {juice.extras &&
-                Object.keys(juice.extras).map((extra) => (
+          <Flex>
+            <Box mr={8}>
+              <Text>Opções</Text>
+              <Stack direction="column">
+                {Object.keys(optionValue).map((option) => (
                   <Checkbox
-                    key={extra}
-                    isChecked={extraValue[extra]?.isIncluded || false}
+                    key={option}
+                    name={option}
+                    isChecked={optionValue[option]?.isIncluded || false}
                     onChange={(e) => {
-                      const { checked } = e.target
-                      setExtraValue((prev) => ({
+                      const { name, checked } = e.target
+                      setOptionValue((prev) => ({
                         ...prev,
-                        [extra]: { ...prev[extra], isIncluded: checked }
+                        [name]: { ...prev[name], isIncluded: checked }
                       }))
                     }}
                   >
-                    {`${optionsTranslate(extra)}: ${moneyFormatter(extraValue[extra]?.value / 100)}`}
+                    {optionsTranslate(option)}
                   </Checkbox>
                 ))}
-            </Stack>
-          </Box>
-          <Box mt={4}>
-            <Text>Quantidade</Text>
-            <Flex align="center" mt={2}>
-              <IconButton aria-label="Decrement" icon={<MinusIcon />} onClick={decrementQuantity} />
-              <Input value={quantity} readOnly textAlign="center" width="50px" mx={2} />
-              <IconButton aria-label="Increment" icon={<AddIcon />} onClick={incrementQuantity} />
-            </Flex>
-          </Box>
+              </Stack>
+            </Box>
+            <Box>
+              <Text>Extras</Text>
+              <Stack direction="column">
+                {juice.extras &&
+                  Object.keys(juice.extras).map((extra) => (
+                    <Checkbox
+                      key={extra}
+                      isChecked={extraValue[extra]?.isIncluded || false}
+                      onChange={(e) => {
+                        const { checked } = e.target
+                        setExtraValue((prev) => ({
+                          ...prev,
+                          [extra]: { ...prev[extra], isIncluded: checked }
+                        }))
+                      }}
+                    >
+                      {`${optionsTranslate(extra)}: ${moneyFormatter(extraValue[extra]?.value / 100)}`}
+                    </Checkbox>
+                  ))}
+              </Stack>
+            </Box>
+          </Flex>
         </ModalBody>
 
         <ModalFooter>
           <Flex w="100%" align="center" justify="space-between">
-            <Text>Valor do pedido: {moneyFormatter(orderPrice / 100)}</Text>
-            <Button colorScheme="blue" onClick={handleAddToCart}>
-              Adicionar ao Carrinho
-            </Button>
+            <Box>
+              <Text>Quantidade</Text>
+              <Flex align="center" mt={2}>
+                <IconButton
+                  aria-label="Decrement"
+                  borderRadius={2}
+                  boxShadow="xs"
+                  icon={<MinusIcon />}
+                  onClick={decrementQuantity}
+                />
+                <Input
+                  value={quantity}
+                  readOnly
+                  textAlign="center"
+                  width="50px"
+                  mx={2}
+                  borderRadius={2}
+                  boxShadow="xs"
+                  bg="transparent"
+                  borderColor={colorsProxy.form.label}
+                />
+                <IconButton
+                  aria-label="Increment"
+                  borderRadius={2}
+                  boxShadow="xs"
+                  icon={<AddIcon />}
+                  onClick={incrementQuantity}
+                />
+              </Flex>
+            </Box>
+            <Box>
+              <Text mb="3">Valor do pedido: {moneyFormatter(orderPrice / 100)}</Text>
+              <Button
+                bg={colorsProxy.form.label}
+                color="#FFFFFF"
+                borderRadius={2}
+                boxShadow="xs"
+                _hover={{
+                  borderWidth: `1px`,
+                  borderColor: `${colorsProxy.form.label}`,
+                  color: `${colorsProxy.form.label}`,
+                  backgroundColor: '#FFFFFF'
+                }}
+                onClick={handleAddToCart}
+              >
+                Adicionar ao Carrinho
+              </Button>
+            </Box>
           </Flex>
         </ModalFooter>
       </ModalContent>

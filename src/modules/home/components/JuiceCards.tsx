@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Image, SimpleGrid, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Flex, Image, SimpleGrid, Text, useDisclosure, Spinner } from '@chakra-ui/react'
 import { JuiceType } from '../types'
 import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 import { fontsProxy } from '@/modules/shared/constants/fonts'
@@ -25,7 +25,7 @@ export const JuiceCards: React.FC = () => {
   }, [data, setJuiceTypes])
 
   if (isLoading) {
-    return <Text>Carregando...</Text>
+    return <Spinner p={10} mt={10} />
   }
 
   if (error) {
