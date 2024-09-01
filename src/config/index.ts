@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const http = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_GATEWAY_URL
+  baseURL: 'https://testecolab.onrender.com'
 })
 
 export class UnexpectedError extends Error {
