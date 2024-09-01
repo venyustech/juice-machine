@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
-import { Box, Button, Flex, Image, SimpleGrid, Text, useDisclosure, IconButton, Input } from '@chakra-ui/react'
+import { Box, Flex, Image, SimpleGrid, Text, useDisclosure, IconButton, Input, useToast } from '@chakra-ui/react'
 import { DeleteIcon, AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { cartStore } from '@/modules/cart/store/cart'
 import { useSaveOrder } from '@/modules/cart/hooks/useSaveOrder'
-import { OrderPayload } from '@/modules/cart/types'
 import { JuiceById } from '@/modules/cart/types'
-import { colorsProxy } from '@/modules/shared/constants/colorTheme'
-import { fontsProxy } from '@/modules/shared/constants/fonts'
 import { RemoveItemModal } from './RemoveItemModal'
 import { moneyFormatter } from '@/modules/home/constants/utils'
+import { ChooseLocationForm } from './ChooseLocationForm'
+import { fontsProxy } from '@/modules/shared/constants/fonts'
+import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 
 export const Cart = () => {
   const { cart, addItemToCart, removeItemFromCart } = cartStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedJuice, setSelectedJuice] = useState<JuiceById | null>(null)
+  const toast = useToast()
 
   const { mutate } = useSaveOrder()
 
@@ -45,12 +46,11 @@ export const Cart = () => {
     })
   }
 
-  const handlePayload = () => {
+  const handlePayload = (formData: any) => {
     if (!cart?.length) {
       return
     }
-    const order: OrderPayload[] = cart.map((items) => {
-      // Converter `extras` e `options` para o formato esperado
+    const order = cart.map((items) => {
       const mappedOptions: { [keyname: string]: boolean } = Object.keys(items.options).reduce((acc, key) => {
         acc[key] = items.options[key].isIncluded
         return acc
@@ -65,11 +65,24 @@ export const Cart = () => {
         options: mappedOptions,
         extras: mappedExtras,
         juiceId: items.juice.id,
-        machine: '1'
+        machine: formData.machineId,
+        pickupDateTime: formData.pickupDateTime,
+        cpf: formData.cpf,
+        email: formData.email,
+        quantity: items.quantity
       }
     })
-    console.log('Resumo da compra:', order)
-    mutate(order)
+    mutate(order, {
+      onSuccess: () => {
+        toast({
+          title: 'Pedido efetuado com sucesso!',
+          description: `Você receberá informações sobre o pedido no e-mail: ${formData.email}\n Obrigado pela preferência`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true
+        })
+      }
+    })
   }
 
   const calculateExtraCost = (extras: any) => {
@@ -180,23 +193,7 @@ export const Cart = () => {
                 )
             )}
           </SimpleGrid>
-          <Flex justify="space-between" align="center" mt={8}>
-            <Text fontSize="xl" fontWeight="bold">
-              Total:
-            </Text>
-            <Text fontSize="2xl">{moneyFormatter(total / 100)}</Text>
-          </Flex>
-          <Button
-            mt={8}
-            onClick={handlePayload}
-            bg={colorsProxy.main['logo-main-color']}
-            color="white"
-            _hover={{
-              bg: colorsProxy.main['logo-main-color']
-            }}
-          >
-            Finalizar pedido
-          </Button>
+          <ChooseLocationForm onSubmit={handlePayload} />
         </Box>
       </Flex>
 
