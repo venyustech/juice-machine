@@ -1,41 +1,32 @@
-import axios, { AxiosError } from 'axios'
+import { http, UnexpectedError } from '@/config'
 import { JuiceById, Machine, OrderPayload } from '../types'
 
-export const saveOrder = async (data: OrderPayload[]) => {
-  const url = 'https://testecolab.onrender.com/order/create'
+export const saveOrder = async (data: OrderPayload[]): Promise<void> => {
+  const url = '/order/create'
   try {
     console.log('save order', data)
-    const response = await axios.post(url, data)
-    return response.data
+    await http.post(url, data)
   } catch (err) {
-    if (err instanceof AxiosError) {
-      throw new Error(err.message)
-    }
+    throw new UnexpectedError()
   }
 }
 
 export const getJuiceById = async (juiceId: number): Promise<JuiceById> => {
-  const url = `https://testecolab.onrender.com/juice/${juiceId}`
+  const url = `/juice/${juiceId}`
   try {
-    const response = await axios.get(url)
-    return response.data
+    const result = await http.get<JuiceById>(url)
+    return result.data
   } catch (err) {
-    if (err instanceof AxiosError) {
-      throw new Error(err.message)
-    }
-    throw new Error('Erro desconhecido ao buscar o suco.')
+    throw new UnexpectedError()
   }
 }
 
 export const getMachines = async (): Promise<Machine[]> => {
-  const url = 'https://testecolab.onrender.com/machines'
+  const url = '/machines'
   try {
-    const response = await axios.get(url)
-    return response.data
+    const result = await http.get<Machine[]>(url)
+    return result.data
   } catch (err) {
-    if (err instanceof AxiosError) {
-      throw new Error(err.message)
-    }
-    throw new Error('Erro desconhecido ao buscar as máquinas.')
+    throw new UnexpectedError()
   }
 }

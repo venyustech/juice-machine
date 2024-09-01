@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { colorsProxy } from '@/modules/shared/constants/colorTheme'
 import { useGetMachines } from '@/modules/cart/hooks/useGetMachines'
 import { useMachineStore } from '../store/machine'
-import { localizationSchema, LocalizationSchema } from '../validators'
+import { LocalizationSchema, localizationSchema } from '../validators'
 
 interface ChooseLocationFormProps {
   onSubmit: (data: LocalizationSchema) => void
@@ -46,7 +46,12 @@ export const ChooseLocationForm: React.FC<ChooseLocationFormProps> = ({ onSubmit
         <Text fontSize="lg" fontWeight="bold" mb={2}>
           Escolha o local de retirada
         </Text>
-        <Select {...register('machineId')} placeholder="Selecione um local de retirada">
+        <Select
+          bg="transparent"
+          borderColor={colorsProxy.form.label}
+          {...register('machineId')}
+          placeholder="Selecione um local de retirada"
+        >
           {machines.map((machine) => (
             <option key={machine.id} value={machine.id}>
               {machine.name}
@@ -60,7 +65,12 @@ export const ChooseLocationForm: React.FC<ChooseLocationFormProps> = ({ onSubmit
         <Text fontSize="lg" fontWeight="bold" mb={2}>
           Escolha a data e horário de retirada
         </Text>
-        <Input type="datetime-local" {...register('pickupDateTime')} />
+        <Input
+          bg="transparent"
+          borderColor={colorsProxy.form.label}
+          type="datetime-local"
+          {...register('pickupDateTime')}
+        />
         {errors.pickupDateTime && <Text color="red">{errors.pickupDateTime.message}</Text>}
       </Box>
 
@@ -68,7 +78,14 @@ export const ChooseLocationForm: React.FC<ChooseLocationFormProps> = ({ onSubmit
         <Text fontSize="lg" fontWeight="bold" mb={2}>
           CPF
         </Text>
-        <Input type="text" maxLength={11} {...register('cpf')} placeholder="Digite seu CPF" />
+        <Input
+          bg="transparent"
+          borderColor={colorsProxy.form.label}
+          type="text"
+          maxLength={11}
+          {...register('cpf')}
+          placeholder="Digite seu CPF"
+        />
         {errors.cpf && <Text color="red">{errors.cpf.message}</Text>}
       </Box>
 
@@ -83,10 +100,13 @@ export const ChooseLocationForm: React.FC<ChooseLocationFormProps> = ({ onSubmit
       <Button
         mt={8}
         type="submit"
-        bg={colorsProxy.main['logo-main-color']}
-        color="white"
+        bg={colorsProxy.form.label}
+        color="#FFFFFF"
         _hover={{
-          bg: colorsProxy.main['logo-main-color']
+          borderWidth: `1px`,
+          borderColor: `${colorsProxy.form.label}`,
+          color: `${colorsProxy.form.label}`,
+          backgroundColor: '#FFFFFF'
         }}
       >
         Finalizar pedido

@@ -102,7 +102,7 @@ export const Cart = () => {
   return (
     <>
       <Flex justify="center" pt={{ base: 3, md: 14 }} pb={8}>
-        <Box minW="1180px">
+        <Box minW={{ base: '100%', lg: '1180px' }}>
           <Text
             fontSize="2xl"
             fontFamily={fontsProxy.fonts.playfairDisplay}
@@ -176,17 +176,22 @@ export const Cart = () => {
                       </Flex>
                     </Box>
                     <Flex>
-                      <Image
-                        src={item.juice.imageUrl}
-                        alt={item.juice.name}
-                        width={{ base: '100px', md: '150px', lg: '200px' }}
-                        objectFit="cover"
-                      />
+                      <Flex h={'100%'} bg="black" alignItems="center" justifyContent="center">
+                        <Image
+                          src={item.juice.imageUrl}
+                          alt={item.juice.name}
+                          width={{ base: '150px', md: '150px', lg: '200px' }}
+                          objectFit="cover"
+                          h={{ base: '150px', md: '90%' }}
+                        />
+                      </Flex>
                       <IconButton
                         aria-label="Remove item"
                         icon={<DeleteIcon />}
+                        bg="transparent"
                         onClick={() => handleRemoveClick(item.juice)}
                         ml={4}
+                        zIndex={-1}
                       />
                     </Flex>
                   </Flex>
